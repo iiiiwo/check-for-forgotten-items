@@ -14,7 +14,7 @@ export const CheckList: React.FC<CheckListProps> = ({
   category,
   onChangeCategory,
 }) => {
-  const { checkState, toggleItem, resetCheckState, addSession } = useStore();
+  const { checkState, toggleItem, resetCheckState, addSession, updateCategory } = useStore();
   const [showCompletionAlert, setShowCompletionAlert] = useState(false);
   const [showIncompleteAlert, setShowIncompleteAlert] = useState(false);
   const [incompleteItems, setIncompleteItems] = useState<string[]>([]);
@@ -22,20 +22,18 @@ export const CheckList: React.FC<CheckListProps> = ({
   const IconComponent = getIconComponent(category.icon);
   const colorClasses = getColorClasses(category.color);
 
-  // Sort items by priority and filter out checked items
+  // Sort items by priority
   const sortedItems = useMemo(() => {
     const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
-    return [...category.items]
-      .filter(item => !checkState[item.id])
-      .sort((a, b) => {
-        const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2;
-        const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2;
-        if (aPriority !== bPriority) {
-          return aPriority - bPriority;
-        }
-        return a.name.localeCompare(b.name);
-      });
-  }, [category.items, checkState]);
+    return [...category.items].sort((a, b) => {
+      const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2;
+      const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2;
+      if (aPriority !== bPriority) {
+        return aPriority - bPriority;
+      }
+      return a.name.localeCompare(b.name);
+    });
+  }, [category.items]);
 
   const checkedCount = category.items.filter(item => checkState[item.id]).length;
   const completionRate = category.items.length > 0 ? checkedCount / category.items.length : 0;
@@ -75,6 +73,12 @@ export const CheckList: React.FC<CheckListProps> = ({
     };
     
     addSession(session);
+    
+    // Remove checked items from the category after session is saved
+    const checkedItemIds = Object.keys(checkState).filter(itemId => checkState[itemId]);
+    const remainingItems = category.items.filter(item => !checkedItemIds.includes(item.id));
+    
+    updateCategory(category.id, { items: remainingItems });
     resetCheckState();
   };
 
