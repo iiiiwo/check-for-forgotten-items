@@ -7,9 +7,12 @@ import { CheckPage } from './pages/CheckPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { useStore } from './store/useStore';
+import { useDarkMode } from './hooks/useDarkMode';
 
 export const App: React.FC = () => {
   const initializeApp = useStore((state) => state.initializeApp);
+  
+  useDarkMode();
 
   useEffect(() => {
     initializeApp();

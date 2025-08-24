@@ -22,24 +22,26 @@ export const CheckList: React.FC<CheckListProps> = ({
   const IconComponent = getIconComponent(category.icon);
   const colorClasses = getColorClasses(category.color);
 
-  // Sort items by priority
+  // Sort items by priority and filter out checked items
   const sortedItems = useMemo(() => {
     const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
-    return [...category.items].sort((a, b) => {
-      const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2;
-      const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2;
-      if (aPriority !== bPriority) {
-        return aPriority - bPriority;
-      }
-      return a.name.localeCompare(b.name);
-    });
-  }, [category.items]);
+    return [...category.items]
+      .filter(item => !checkState[item.id])
+      .sort((a, b) => {
+        const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2;
+        const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2;
+        if (aPriority !== bPriority) {
+          return aPriority - bPriority;
+        }
+        return a.name.localeCompare(b.name);
+      });
+  }, [category.items, checkState]);
 
-  const checkedCount = sortedItems.filter(item => checkState[item.id]).length;
-  const completionRate = sortedItems.length > 0 ? checkedCount / sortedItems.length : 0;
+  const checkedCount = category.items.filter(item => checkState[item.id]).length;
+  const completionRate = category.items.length > 0 ? checkedCount / category.items.length : 0;
 
   const handleFinishCheck = async () => {
-    const uncheckedItems = sortedItems.filter(item => !checkState[item.id]);
+    const uncheckedItems = category.items.filter(item => !checkState[item.id]);
     
     if (uncheckedItems.length === 0) {
       // All items checked
@@ -65,7 +67,7 @@ export const CheckList: React.FC<CheckListProps> = ({
       categoryId: category.id,
       categoryName: category.name,
       date: new Date(),
-      totalItems: sortedItems.length,
+      totalItems: category.items.length,
       completedItems: checkedCount,
       incompleteItems: incomplete,
       isAllCompleted: incomplete.length === 0,
@@ -129,7 +131,7 @@ export const CheckList: React.FC<CheckListProps> = ({
           
           <div className="text-right">
             <div className={`text-lg font-semibold ${colorClasses.text}`}>
-              {checkedCount}/{sortedItems.length}
+              {checkedCount}/{category.items.length}
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {Math.round(completionRate * 100)}%

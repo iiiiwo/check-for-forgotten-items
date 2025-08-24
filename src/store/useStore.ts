@@ -47,7 +47,7 @@ export const useStore = create<AppStore>((set, get) => ({
   settings: {
     notificationsEnabled: false,
     notificationTime: '08:00',
-    darkMode: false,
+    darkMode: 'system',
   },
   selectedCategoryId: null,
 

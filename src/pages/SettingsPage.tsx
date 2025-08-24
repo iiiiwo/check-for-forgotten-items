@@ -175,19 +175,33 @@ export const SettingsPage: React.FC = () => {
           </h3>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  ダークモード
-                </label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  システムの設定に自動で切り替わります
-                </p>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                <SunIcon size={16} />
-                <span className="text-sm">自動</span>
-                <MoonIcon size={16} />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                外観テーマ
+              </label>
+              <div className="space-y-2">
+                {[
+                  { value: 'light', label: 'ライトモード', icon: SunIcon },
+                  { value: 'dark', label: 'ダークモード', icon: MoonIcon },
+                  { value: 'system', label: 'システム設定に従う', icon: null },
+                ].map((option) => (
+                  <label key={option.value} className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="theme"
+                      value={option.value}
+                      checked={settings.darkMode === option.value}
+                      onChange={(e) => updateSettings({ darkMode: e.target.value as 'light' | 'dark' | 'system' })}
+                      className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="flex items-center space-x-2">
+                      {option.icon && <option.icon size={16} className="text-gray-500" />}
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {option.label}
+                      </span>
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
@@ -254,7 +268,7 @@ export const SettingsPage: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span>開発者</span>
-              <span>Claude Code</span>
+              <span>Shota Iwaki</span>
             </div>
           </div>
         </div>

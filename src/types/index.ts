@@ -42,7 +42,7 @@ export interface CheckSession {
 export interface AppSettings {
   notificationsEnabled: boolean;
   notificationTime: string; // HH:mm format
-  darkMode: boolean;
+  darkMode: 'light' | 'dark' | 'system';
 }
 
 export interface CheckState {
