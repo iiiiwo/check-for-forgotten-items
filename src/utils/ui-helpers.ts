@@ -1,7 +1,7 @@
 import { 
   FolderIcon,
   BriefcaseIcon,
-  SuitcaseIcon,
+  LuggageIcon,
   BookOpenIcon,
   GamepadIcon,
   MusicIcon,
@@ -16,14 +16,14 @@ import {
   FlagIcon,
   BellIcon,
   GiftIcon,
-  LucideIcon,
+  type LucideIcon,
 } from 'lucide-react';
 import type { CategoryColor } from '../types';
 
 const iconMap: Record<string, LucideIcon> = {
   'folder': FolderIcon,
   'briefcase': BriefcaseIcon,
-  'suitcase': SuitcaseIcon,
+  'suitcase': LuggageIcon,
   'book-open': BookOpenIcon,
   'gamepad': GamepadIcon,
   'music': MusicIcon,
